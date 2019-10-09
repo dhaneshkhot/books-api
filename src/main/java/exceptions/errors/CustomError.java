@@ -7,7 +7,6 @@ public class CustomError {
     private String error;
 
     public CustomError(int statusCode, String message, String error) {
-//        super();
         this.statusCode = statusCode;
         this.message = message;
         this.error = error;

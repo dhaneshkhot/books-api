@@ -1,6 +1,5 @@
 package springbootapi.booksapi.controllers;
 
-import exceptions.errors.ConflictError;
 import exceptions.errors.CustomError;
 import exceptions.errors.CustomRestExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +8,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import springbootapi.booksapi.entity.Book;
 import springbootapi.booksapi.services.BookService;
-
 
 import java.util.List;
 
@@ -40,25 +37,23 @@ public class BooksController {
 
     @PostMapping("/api/books")
     public ResponseEntity<?> saveBook(@RequestBody Book book){
+        String message = "'id' is not allowed to send";
         if(book.getId()!=null){
-            return new ResponseEntity<Object>("'id' is not allowed to send", HttpStatus.BAD_REQUEST);
+            CustomError ce = new CustomError(HttpStatus.BAD_REQUEST.value(), message, message);
+
+            CustomRestExceptionHandler creh = new CustomRestExceptionHandler();
+            return creh.handleBadRequest(ce);
         }
         try {
             bookService.saveBook(book);
         } catch (DataIntegrityViolationException e){
             String detailError = e.getMostSpecificCause().getMessage();
+            String customError = getCustomErrorMessages(detailError);
 
-            int startIndex = detailError.indexOf("ON ")+3;
-            int endIndex = detailError.indexOf(" VALUES");
-            String schema = detailError.substring(startIndex, endIndex);
-            String fieldName = schema.substring(schema.indexOf("(")+1,schema.indexOf(")"));
-
-            String customErrorMessage = "'"+fieldName+"'"+" cannot be duplicate!";
-
-            ConflictError ce = new ConflictError(HttpStatus.CONFLICT.value(), detailError, customErrorMessage);
+            CustomError ce = new CustomError(HttpStatus.CONFLICT.value(), detailError, customError);
 
             CustomRestExceptionHandler creh = new CustomRestExceptionHandler();
-            return creh.handleDataIntegrityViolationException(e, ce);
+            return creh.handleDataIntegrityViolationException(ce);
         }
         System.out.println("Book Saved Successfully");
         return new ResponseEntity<Book>(book, HttpStatus.CREATED);
@@ -79,7 +74,11 @@ public class BooksController {
     public ResponseEntity<?>  updateBook(@RequestBody Book book, @PathVariable(name="bookId")Long bookId){
         Book bookToUpdate = null;
         if(book.getId()!=null){
-            return new ResponseEntity<Object>("'id' is not allowed to send", HttpStatus.BAD_REQUEST);
+            String message = "'id' is not allowed to send";
+            CustomError ce = new CustomError(HttpStatus.BAD_REQUEST.value(), message, message);
+
+            CustomRestExceptionHandler creh = new CustomRestExceptionHandler();
+            return creh.handleBadRequest(ce);
         }
 
         ResponseEntity bookResponse = bookService.getBook(bookId);
@@ -87,14 +86,36 @@ public class BooksController {
             return bookResponse;
         }
         else {
-            bookToUpdate = (Book)bookResponse.getBody();
-            bookToUpdate.setAuthor(book.getAuthor());
-            bookToUpdate.setTitle(book.getTitle());
+            try {
+                bookToUpdate = (Book) bookResponse.getBody();
+                bookToUpdate.setAuthor(book.getAuthor());
+                bookToUpdate.setTitle(book.getTitle());
 
-            bookService.updateBook(bookToUpdate);
+                bookService.updateBook(bookToUpdate);
+                return new ResponseEntity<Book>(bookToUpdate, HttpStatus.OK);
+            } catch (DataIntegrityViolationException e){
+                String detailError = e.getMostSpecificCause().getMessage();
+                String customError = getCustomErrorMessages(detailError);
+
+                CustomError ce = new CustomError(HttpStatus.CONFLICT.value(), detailError, customError);
+
+                CustomRestExceptionHandler creh = new CustomRestExceptionHandler();
+                return creh.handleDataIntegrityViolationException(ce);
+            }
         }
-        return new ResponseEntity<Book>(bookToUpdate, HttpStatus.OK);
 
+    }
+
+    private String getCustomErrorMessages(String detailError) {
+        int startIndex = detailError.indexOf("ON ")+3;
+        int endIndex = detailError.indexOf(" VALUES");
+        String schema = detailError.substring(startIndex, endIndex);
+
+        String schemaName = schema.substring(0, schema.indexOf(".")-1);
+        String tableName = schema.substring(schema.indexOf(".")+1, schema.indexOf("(")-1);
+        String fieldName = schema.substring(schema.indexOf("(")+1,schema.indexOf(")"));
+
+        return "'" + fieldName + "'"+" cannot be duplicate!";
     }
 
 }
