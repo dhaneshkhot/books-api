@@ -1,6 +1,8 @@
 package springbootapi.booksapi.controllers;
 
 import exceptions.errors.ConflictError;
+import exceptions.errors.CustomError;
+import exceptions.errors.CustomRestExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -44,8 +46,19 @@ public class BooksController {
         try {
             bookService.saveBook(book);
         } catch (DataIntegrityViolationException e){
-            ConflictError ce = new ConflictError(e.getMostSpecificCause().getMessage());
-            return new ResponseEntity<Object>(ce.getError(), HttpStatus.CONFLICT);
+            String detailError = e.getMostSpecificCause().getMessage();
+
+            int startIndex = detailError.indexOf("ON ")+3;
+            int endIndex = detailError.indexOf(" VALUES");
+            String schema = detailError.substring(startIndex, endIndex);
+            String fieldName = schema.substring(schema.indexOf("(")+1,schema.indexOf(")"));
+
+            String customErrorMessage = "'"+fieldName+"'"+" cannot be duplicate!";
+
+            ConflictError ce = new ConflictError(HttpStatus.CONFLICT.value(), detailError, customErrorMessage);
+
+            CustomRestExceptionHandler creh = new CustomRestExceptionHandler();
+            return creh.handleDataIntegrityViolationException(e, ce);
         }
         System.out.println("Book Saved Successfully");
         return new ResponseEntity<Book>(book, HttpStatus.CREATED);
