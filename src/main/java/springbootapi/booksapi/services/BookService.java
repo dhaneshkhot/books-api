@@ -1,6 +1,7 @@
 package springbootapi.booksapi.services;
 
 
+import org.springframework.http.ResponseEntity;
 import springbootapi.booksapi.entity.Book;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public interface BookService {
     List<Book> retrieveBooks();
 
-    Book getBook(Long bookId);
+    ResponseEntity<?> getBook(Long bookId);
 
     void saveBook(Book book);
 

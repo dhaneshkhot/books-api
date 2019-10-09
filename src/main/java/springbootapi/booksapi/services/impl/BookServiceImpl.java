@@ -1,6 +1,8 @@
 package springbootapi.booksapi.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import springbootapi.booksapi.entity.Book;
 import springbootapi.booksapi.repository.BookRepository;
@@ -23,9 +25,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book getBook(Long bookId) {
+    public ResponseEntity<?> getBook(Long bookId) {
         Optional<Book> optBook = bookRepository.findById(bookId);
-        return optBook.get();
+        if (!optBook.isPresent()) {
+            return new ResponseEntity<Object>("Book not found for id '" + bookId + "'", HttpStatus.NOT_FOUND);
+        } else
+            return new ResponseEntity<Book>(optBook.get(), HttpStatus.OK);
     }
 
     @Override
