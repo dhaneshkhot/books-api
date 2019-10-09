@@ -64,6 +64,7 @@ public class BooksController {
 
     @PutMapping("/api/books/{bookId}")
     public ResponseEntity<?>  updateBook(@RequestBody Book book, @PathVariable(name="bookId")Long bookId){
+        Book bookToUpdate = null;
         if(book.getId()!=null){
             return new ResponseEntity<Object>("'id' is not allowed to send", HttpStatus.BAD_REQUEST);
         }
@@ -73,9 +74,13 @@ public class BooksController {
             return bookResponse;
         }
         else {
-            bookService.updateBook(book);
+            bookToUpdate = (Book)bookResponse.getBody();
+            bookToUpdate.setAuthor(book.getAuthor());
+            bookToUpdate.setTitle(book.getTitle());
+
+            bookService.updateBook(bookToUpdate);
         }
-        return new ResponseEntity<Book>(book, HttpStatus.OK);
+        return new ResponseEntity<Book>(bookToUpdate, HttpStatus.OK);
 
     }
 
