@@ -1,15 +1,12 @@
-package exceptions.errors;
+package responses;
 
-public class CustomError {
-
+public class CustomSuccess {
     private int statusCode;
     private String message;
-    private String error;
 
-    public CustomError(int statusCode, String message, String error) {
+    public CustomSuccess(int statusCode, String message) {
         this.statusCode = statusCode;
         this.message = message;
-        this.error = error;
     }
 
     public int getStatusCode() {
@@ -20,7 +17,4 @@ public class CustomError {
         return message;
     }
 
-    public String getError() {
-        return error;
-    }
 }

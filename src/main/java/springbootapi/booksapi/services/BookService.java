@@ -11,9 +11,7 @@ public interface BookService {
 
     ResponseEntity<?> getBook(Long bookId);
 
-    void saveBook(Book book);
+    ResponseEntity<?> saveBook(Book book);
 
-    void deleteBook(Long bookId);
-
-    void updateBook(Book book);
+    ResponseEntity<?> deleteBook(Long bookId);
 }
