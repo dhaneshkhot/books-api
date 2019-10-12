@@ -42,22 +42,11 @@ public class BookControllerTest extends AbstractTest {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-    protected String mapToJson(Object obj) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(obj);
-    }
-
-    protected <T> T mapFromJson(String json, Class<T> clazz)
-            throws JsonParseException, JsonMappingException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, clazz);
-    }
-
     @Test
     public void testGetBooks() throws Exception {
         String uri = "/api/books/";
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get(uri).accept(MediaType.APPLICATION_JSON)).andReturn();
-        Assert.assertEquals("Failure: ", 200, result.getResponse().getStatus());
+        Assert.assertEquals("failure: ", 200, result.getResponse().getStatus());
 
         //Getting size as 0 here even though there are 3 rows in db
 //        Assert.assertEquals("Failure, content size is not equal to 3 ", 3, result.getResponse().getContentLength());
@@ -97,7 +86,7 @@ public class BookControllerTest extends AbstractTest {
 
         CustomError customError = mapFromJson(content, CustomError.class);
 
-        Assert.assertEquals("Failure, expected error message did not match",
+        Assert.assertEquals("failure, expected error message did not match",
                 "'AUTHOR' cannot be duplicate!", customError.getError());
     }
 
@@ -179,7 +168,7 @@ public class BookControllerTest extends AbstractTest {
         Assert.assertEquals("failure - expected HTTP status 204", 204, status);
 
         ResponseEntity<?> getResponse = bookService.getBook(2l);
-        Assert.assertEquals("Failure, book not deleted", HttpStatus.NOT_FOUND, getResponse.getStatusCode());
+        Assert.assertEquals("failure, book not deleted", HttpStatus.NOT_FOUND, getResponse.getStatusCode());
     }
 
     // Test here fails with status 200 instead of 409. in end-to-end, this works
