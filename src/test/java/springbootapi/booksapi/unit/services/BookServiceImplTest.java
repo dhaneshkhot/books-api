@@ -1,4 +1,4 @@
-package springbootapi.booksapi.java.services;
+package springbootapi.booksapi.unit.services;
 
 import errors.CustomError;
 import org.junit.Assert;
@@ -26,9 +26,9 @@ public class BookServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void booksShouldBeEmpty(){
+    public void booksShouldNotBeEmpty(){
         List<Book> books = bookService.retrieveBooks();
-        Assert.assertEquals(0, books.size());
+        Assert.assertEquals(3, books.size());
     }
 
     @Test
@@ -45,11 +45,11 @@ public class BookServiceImplTest extends AbstractTest {
 
     @Test
     public void shouldCreateBook(){
-        Book aBook = new Book();
-        aBook.setAuthor("Author");
-        aBook.setTitle("Title");
+        Book book = new Book();
+        book.setAuthor("Author");
+        book.setTitle("Title");
 
-        ResponseEntity<?> savedBookResponse = bookService.saveBook(aBook);
+        ResponseEntity<?> savedBookResponse = bookService.saveBook(book);
         Assert.assertEquals(HttpStatus.CREATED, savedBookResponse.getStatusCode());
 
         Book savedBook = (Book)savedBookResponse.getBody();
@@ -59,17 +59,12 @@ public class BookServiceImplTest extends AbstractTest {
 
     @Test
     public void shouldBeAbleToUpdateBook(){
-        Book aBook = new Book();
-        aBook.setAuthor("Author");
-        aBook.setTitle("Title");
+        Book book = new Book();
+        book.setId(1l);
+        book.setAuthor("AuthorUpdated");
+        book.setTitle("TitleUpdated");
 
-        ResponseEntity<?> savedBookResponse = bookService.saveBook(aBook);
-
-        aBook.setId(((Book)savedBookResponse.getBody()).getId());
-        aBook.setAuthor("AuthorUpdated");
-        aBook.setTitle("TitleUpdated");
-
-        ResponseEntity<?> updatedBookResponse = bookService.saveBook(aBook);
+        ResponseEntity<?> updatedBookResponse = bookService.saveBook(book);
         Assert.assertEquals(HttpStatus.OK, updatedBookResponse.getStatusCode());
 
         Book updatedBook = (Book)updatedBookResponse.getBody();
@@ -80,27 +75,16 @@ public class BookServiceImplTest extends AbstractTest {
 
     @Test
     public void shouldBeAbleToDeleteBook(){
-        Book aBook = new Book();
-        aBook.setAuthor("Author");
-        aBook.setTitle("Title");
-
-        ResponseEntity<?> savedBookResponse = bookService.saveBook(aBook);
-        ResponseEntity<?> deletedBookResponse = bookService.deleteBook(((Book)savedBookResponse.getBody()).getId());
+        ResponseEntity<?> deletedBookResponse = bookService.deleteBook(2l);
         Assert.assertEquals(HttpStatus.NO_CONTENT, deletedBookResponse.getStatusCode());
     }
 
     @Test
-    public void shouldReturnConflictResponseOnCreateSameBook(){
-        Book aBook = new Book();
-        aBook.setAuthor("Author");
-        aBook.setTitle("Title");
-
-        ResponseEntity<?> savedBookResponse = bookService.saveBook(aBook);
-
-        Book book2 = new Book();
-        book2.setAuthor("Author");
-        book2.setTitle("Title");
-        ResponseEntity<?> savedBookConflictResponse = bookService.saveBook(book2);
+    public void shouldReturnConflictResponseOnCreateExistentBook(){
+        Book book = new Book();
+        book.setAuthor("Author3");
+        book.setTitle("Title3");
+        ResponseEntity<?> savedBookConflictResponse = bookService.saveBook(book);
 
         Assert.assertEquals(HttpStatus.CONFLICT, savedBookConflictResponse.getStatusCode());
 
