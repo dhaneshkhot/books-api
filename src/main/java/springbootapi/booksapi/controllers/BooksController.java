@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import springbootapi.booksapi.entity.Book;
 import springbootapi.booksapi.services.BookService;
 
-import java.util.List;
-
 @RestController
 public class BooksController {
 
@@ -15,7 +13,7 @@ public class BooksController {
     private BookService bookService;
 
     @GetMapping("/api/books")
-    public List<Book> getBooks() {
+    public ResponseEntity<?> getBooks() {
         return bookService.retrieveBooks();
     }
 

@@ -81,32 +81,6 @@ public class BookControllerMockTest extends AbstractTest {
     }
 
     @Test
-    public void testGetBooks() throws Exception {
-        List<Book> booksStubData = getBooksStubData();
-
-        // Stub the BookService.retrieveBooks method return list of books
-        when(bookService.retrieveBooks()).thenReturn(booksStubData);
-
-        // Perform the behavior being tested
-        String uri = "/api/books";
-
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON)).andReturn();
-
-        // Extract the response status and body
-        String content = result.getResponse().getContentAsString();
-
-        int status = result.getResponse().getStatus();
-
-        // Verify the bookService.retrieveBooks method was invoked once
-        verify(bookService, times(1)).retrieveBooks();
-
-        // Perform standard JUnit assertions on the test results
-        Assert.assertEquals("failure - expected HTTP status 200", 200, status);
-        Assert.assertTrue("failure, Book list size is not greater than 0: ", content.trim().length() > 0);
-    }
-
-    @Test
     public void testBookNotFound() throws Exception {
         Long id = 100l;
 

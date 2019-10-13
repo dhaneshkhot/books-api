@@ -27,8 +27,10 @@ public class BookServiceImplTest extends AbstractTest {
 
     @Test
     public void booksShouldNotBeEmpty(){
-        List<Book> books = bookService.retrieveBooks();
-        Assert.assertEquals(3, books.size());
+        ResponseEntity response = bookService.retrieveBooks();
+        Assert.assertEquals("failure, Status code did not match ", HttpStatus.OK, response.getStatusCode());
+        List<Book> books = (List<Book>)response.getBody();
+        Assert.assertTrue("", books.size() == 3);
     }
 
     @Test

@@ -1,9 +1,5 @@
 package springbootapi.booksapi.unit.controller;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import errors.CustomError;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,7 +19,6 @@ import springbootapi.booksapi.services.BookService;
 import springbootapi.booksapi.unit.AbstractTest;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 
 @Transactional
 @WebAppConfiguration
@@ -171,7 +166,7 @@ public class BookControllerTest extends AbstractTest {
         Assert.assertEquals("failure, book not deleted", HttpStatus.NOT_FOUND, getResponse.getStatusCode());
     }
 
-    // Test here fails with status 200 instead of 409. in end-to-end, this works
+//     Test here fails with status 200 instead of 409. in end-to-end, this works
 //    @Test
 //    public void testUpdateBookConflict() throws Exception {
 //        String uri = "/api/books";

@@ -21,9 +21,15 @@ public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
 
     @Override
-    public List<Book> retrieveBooks() {
-        List<Book> books = bookRepository.findAll();
-        return books;
+    public ResponseEntity<?> retrieveBooks() {
+        ResponseEntity<?> responseEntity;
+        try{
+            List<Book> books = bookRepository.findAll();
+            responseEntity = new ResponseEntity<>(books, HttpStatus.OK);
+        } catch (Exception e){
+            return CustomRestErrorResponseHandler.handleInternalServerError(e);
+        }
+        return responseEntity;
     }
 
     @Override
