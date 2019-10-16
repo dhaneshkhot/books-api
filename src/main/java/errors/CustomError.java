@@ -1,6 +1,5 @@
 package errors;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import org.springframework.http.HttpStatus;
 
 public class CustomError {
