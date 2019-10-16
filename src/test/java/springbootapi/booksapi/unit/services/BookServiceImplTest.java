@@ -82,7 +82,7 @@ public class BookServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void shouldReturnConflictResponseOnCreateExistentBook(){
+    public void shouldReturnConflictResponseOnCreateExistentBookAuthor(){
         Book book = new Book();
         book.setAuthor("Author3");
         book.setTitle("Title3");
@@ -92,6 +92,19 @@ public class BookServiceImplTest extends AbstractTest {
 
         CustomError error = (CustomError)savedBookConflictResponse.getBody();
         Assert.assertEquals("'AUTHOR' cannot be duplicate!", error.getError());
+    }
+
+    @Test
+    public void shouldReturnConflictResponseOnCreateExistentBookTitle(){
+        Book book = new Book();
+        book.setAuthor("Author31");
+        book.setTitle("Title3");
+        ResponseEntity<?> savedBookConflictResponse = bookService.saveBook(book);
+
+        Assert.assertEquals(HttpStatus.CONFLICT, savedBookConflictResponse.getStatusCode());
+
+        CustomError error = (CustomError)savedBookConflictResponse.getBody();
+        Assert.assertEquals("'TITLE' cannot be duplicate!", error.getError());
     }
 
 }
