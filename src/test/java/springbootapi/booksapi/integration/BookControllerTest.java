@@ -1,4 +1,4 @@
-package springbootapi.booksapi.unit.controller;
+package springbootapi.booksapi.integration;
 
 import errors.CustomError;
 import org.junit.Assert;
