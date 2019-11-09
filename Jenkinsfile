@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-                image 'maven:3-alpine'
-                args '-u root'
-        }
-    }
+    agent any
     tools {
         maven 'Maven 3.6.2'
         jdk 'jdk8'
