@@ -14,10 +14,13 @@ pipeline {
             }
          }
 
-        stage ('Package') {
-            withMaven(maven : 'Maven 3.6.2'){
-                sh 'mvn clean package'
+        stage ("Package") {
+            steps {
+                withMaven(maven : 'Maven 3.6.2'){
+                    sh 'mvn clean package'
+                }
             }
+
         }
 
     }
