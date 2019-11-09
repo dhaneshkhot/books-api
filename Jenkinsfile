@@ -15,10 +15,8 @@ pipeline {
          }
     stages {
         stage ('Package') {
-            steps {
-                dir(${M2_HOME}){
-                    sh 'mvn clean package'
-                }
+            withMaven(maven : 'Maven 3.6.2'){
+                sh 'mvn clean package'
             }
         }
 
