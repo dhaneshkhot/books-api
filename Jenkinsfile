@@ -10,16 +10,21 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        stage ("Build Docker Image and Push") {
+        stage ("Build Docker Image") {
             steps {
                 sh 'docker build -t books-api .'
-                // sh 'docker push ' // Idea is to push to docker registry
             }
         }
-        stage ("Deploy Docker Image") {
+        stage ("Deploy Docker Image to test locally") {
             steps {
-                // Idea is to run another jenkins job which pulls image from registry
-                sh 'docker run -p 9090:9090 books-api'
+                sh 'docker run -d --name books-api -p 9090:9090 -e "SPRING_PROFILES_ACTIVE=dev" books-api'
+            }
+        }
+        stage ("Cleanup") {
+            steps {
+                sh 'docker stop books-api'
+                sh 'docker rm books-api'
+                sh 'docker rmi books-api:latest -f'
             }
         }
     }
