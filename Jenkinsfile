@@ -12,7 +12,7 @@ pipeline {
         }
         stage ("Build Docker Image") {
             steps {
-                    sh 'sudo docker build -t books-api .'
+                    sh 'docker build -t books-api .'
             }
         }
     }
