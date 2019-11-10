@@ -5,23 +5,17 @@ pipeline {
         jdk 'jdk8'
     }
     stages {
-        stage ("initialize") {
-            steps {
-                sh '''
-                echo "PATH = ${PATH}"
-                echo "M2_HOME = ${M2_HOME}"
-                '''
-            }
-         }
-
         stage ("Package") {
             steps {
-//                 withMaven(maven : 'Maven 3.6.2'){
                     sh 'mvn clean package'
-//                 }
             }
-
         }
-
+    }
+    stages {
+        stage ("Build Docker Image") {
+            steps {
+                    sh 'sudo docker build -t books-api .'
+            }
+        }
     }
 }
