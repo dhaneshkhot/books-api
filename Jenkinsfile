@@ -14,7 +14,7 @@ pipeline {
             steps {
                     sh 'pwd'
                     sh 'ls -ltr'
-                    sh '/var/run -ltr'
+                    sh 'ls /var/run -ltr'
                     sh 'docker build -t books-api .'
             }
         }
