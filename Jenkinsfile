@@ -16,9 +16,9 @@ pipeline {
 
         stage ("Package") {
             steps {
-                withMaven(maven : 'Maven 3.6.2'){
+//                 withMaven(maven : 'Maven 3.6.2'){
                     sh 'mvn clean package'
-                }
+//                 }
             }
 
         }
