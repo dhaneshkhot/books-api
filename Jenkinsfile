@@ -13,6 +13,8 @@ pipeline {
         stage ("Build Docker Image") {
             steps {
                     sh 'pwd'
+                    sh 'ls -ltr'
+                    sh '/var/run -ltr'
                     sh 'docker build -t books-api .'
             }
         }
