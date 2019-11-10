@@ -12,6 +12,7 @@ pipeline {
         }
         stage ("Build Docker Image") {
             steps {
+                    sh 'pwd'
                     sh 'docker build -t books-api .'
             }
         }
