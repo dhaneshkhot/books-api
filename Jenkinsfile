@@ -17,8 +17,8 @@ pipeline {
         }
         stage ("Deploy Docker Image to test locally") {
             steps {
+                sh 'docker-compose up -d'
                 sh 'docker run -d --name books-api -p 9090:9090 -e "SPRING_PROFILES_ACTIVE=dev" books-api'
-                sh 'docker-compose up'
             }
         }
 //         stage ("Cleanup") {
