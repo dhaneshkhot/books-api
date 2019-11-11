@@ -15,9 +15,13 @@ pipeline {
                 sh 'docker build -t books-api .'
             }
         }
-        stage ("Deploy Docker Image to test locally") {
+        stage ("Start mysql") {
             steps {
                 sh 'docker-compose up -d'
+            }
+        }
+        stage ("Deploy Docker Image to test locally") {
+            steps {
                 sh 'docker run -d --name books-api -p 9090:9090 -e "SPRING_PROFILES_ACTIVE=dev" books-api'
             }
         }
