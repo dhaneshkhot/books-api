@@ -22,7 +22,7 @@ pipeline {
         }
         stage ("Deploy Docker Image to test locally") {
             steps {
-                sh 'docker run -d --name books-api -p 9090:9090 -e "SPRING_PROFILES_ACTIVE=dev" books-api'
+                sh 'docker run -d --name=books-api --net=my-network  -p 9090:9090 -e "SPRING_PROFILES_ACTIVE=dev" books-api'
             }
         }
 //         stage ("Cleanup") {
