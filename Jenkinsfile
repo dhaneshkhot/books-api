@@ -29,9 +29,8 @@ pipeline {
             steps{
                 dir("E2E"){
                     sh 'pwd'
-                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false, timeout: 60], [$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: false, recursiveSubmodules: true, reference: '', timeout: 60, trackingSubmodules: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'server-core'],[$class: 'CheckoutOption', timeout: 60]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/dhaneshkhot/books-api-rest-assured.git']]])
-                    sh 'ls -ltr'
-                    sh 'ls ./server-core -ltr'
+                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false, timeout: 60], [$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: false, recursiveSubmodules: true, reference: '', timeout: 60, trackingSubmodules: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'E2E-TestCode'],[$class: 'CheckoutOption', timeout: 60]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/dhaneshkhot/books-api-rest-assured.git']]])
+                    sh 'cd E2E-TestCode'
                     sh 'mvn test -Dtest="com.example.tests.books.BooksEndToEndTests" -Denv=docker -DdbUsername=root -DdbPassword=password'
                 }
             }
