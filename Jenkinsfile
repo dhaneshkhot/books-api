@@ -34,12 +34,13 @@ pipeline {
                 }
             }
         }
-//         stage ("Cleanup") {
-//             steps {
-//                 sh 'docker stop books-api'
-//                 sh 'docker rm books-api'
-//                 sh 'docker rmi books-api:latest -f'
-//             }
-//         }
+        stage ("Cleanup") {
+            steps {
+                sh 'docker stop books-api'
+                sh 'docker rm books-api'
+                sh 'docker rmi books-api:latest -f'
+                sh 'docker-compose down'
+            }
+        }
     }
 }
