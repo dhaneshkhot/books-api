@@ -12,7 +12,7 @@ pipeline {
         }
         stage ("Build Docker Image") {
             steps {
-                sh 'docker build -t books-api .'
+                sh 'docker build --rm -t books-api .'
             }
         }
         stage ("Start mysql") {
@@ -22,7 +22,7 @@ pipeline {
         }
         stage ("Deploy Docker Image to test locally") {
             steps {
-                sh 'docker run -d --name=books-api --net=my-network  -p 9090:9090 -e "SPRING_PROFILES_ACTIVE=docker" books-api'
+                sh 'docker run -d --rm --name=books-api --net=my-network  -p 9090:9090 -e "SPRING_PROFILES_ACTIVE=docker" books-api'
             }
         }
         stage('E2E Tests'){
