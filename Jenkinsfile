@@ -27,23 +27,20 @@ pipeline {
         }
         stage('E2E Tests'){
             steps{
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false, timeout: 60], [$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: false, recursiveSubmodules: true, reference: '', timeout: 60, trackingSubmodules: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'E2E'],[$class: 'CheckoutOption', timeout: 60]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/dhaneshkhot/books-api-rest-assured.git']]])
                 dir("E2E"){
-                    sh 'pwd'
                     sh 'ls -ltr'
-                    sh 'ls ./E2E -ltr'
-                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false, timeout: 60], [$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: false, recursiveSubmodules: true, reference: '', timeout: 60, trackingSubmodules: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'server-core'],[$class: 'CheckoutOption', timeout: 60]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/dhaneshkhot/books-api-rest-assured.git']]])
-                    sh 'pwd'
-                    sh 'ls -ltr'
-                    sh 'ls ./E2E -ltr'
+                    sh 'mvn test -Dtest="com.example.tests.books.BooksEndToEndTests" -Denv=docker -DdbUsername=root -DdbPassword=password'
                 }
             }
         }
-//         stage ("Cleanup") {
-//             steps {
-//                 sh 'docker stop books-api'
-//                 sh 'docker rm books-api'
-//                 sh 'docker rmi books-api:latest -f'
-//             }
-//         }
+        stage ("Cleanup") {
+            steps {
+                sh 'docker stop books-api'
+                sh 'docker rm books-api'
+                sh 'docker rmi books-api:latest -f'
+                sh 'docker-compose down'
+            }
+        }
     }
 }
