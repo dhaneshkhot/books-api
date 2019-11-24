@@ -39,7 +39,7 @@ pipeline {
     post {
         always {
             sh 'docker stop books-api'
-            sh 'docker rm books-api'
+//             sh 'docker rm books-api' // not needed here as rm is included in run command, line #25
             sh 'docker rmi books-api:latest -f'
             sh 'docker-compose down'
         }
